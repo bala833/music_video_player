@@ -1,0 +1,107 @@
+{% extends 'base.html' %}
+{% load crispy_forms_tags %}
+{% load crispy_forms_field %}
+
+
+{% block content %}
+<style type="text/css">
+	 input[type=text], select, textarea {
+  width: 100%;
+  padding: 12px;
+  border: 1px solid #ccc;
+  border-radius: 4px;
+  resize: vertical;
+}
+
+
+.form-control, .is-focused .form-control {
+
+}
+
+
+
+
+
+
+
+element.style {
+}
+.form-control:invalid {
+    /* background-image: linear-gradient(to top, #f44336 2px, rgba(244, 67, 54, 0) 2px), linear-gradient(to top, #d2d2d2 1px, rgba(210, 210, 210, 0) 1px); */
+}
+input[type=text],input[type=file], select, textarea {
+    width: 100%;
+    padding: 12px;
+    border: 1px solid #ccc;
+    border-radius: 4px;
+    resize: vertical;
+}
+
+.form-control, label, input::placeholder {
+    /* line-height: 1.1; */
+}
+.form-control, .is-focused .form-control {
+    background-image: ;
+}
+.form-control {
+    /* background: no-repeat center bottom, center calc(100% - 1px); */
+    /* background-size: 0 100%, 100% 100%; */
+    /* border: 0; */
+    /* height: 36px; */
+    /* transition: background 0s ease-out; */
+    /* padding-left: 0; */
+    /* padding-right: 0; */
+    /* border-radius: 0; */
+    /* font-size: 14px; */
+}
+.form-control {
+    display: block;
+     width: 100%; 
+     padding: 0.4375rem 0; 
+     font-size: 1rem; 
+    line-height: 1.5;
+    color: #495057;
+     background-color: rgba(0, 0, 0, 0); 
+    background-clip: padding-box;
+     border: 1px solid #d2d2d2; 
+    border-radius: 0;
+    box-shadow: none;
+    background: no-repeat ;
+    background-size: none;
+    /* transition: border-color 0.15s ease-in-out, box-shadow 0.15s ease-in-out; */
+}
+.form-control:invalid {
+	background-image: none;
+}
+</style>
+
+<div class="row">
+  <form method="post" class="col-md-12" enctype="multipart/form-data">
+    {% csrf_token %}
+    <div class="row">
+      <div class="col-md-6">
+        {{ form.title|as_crispy_field }}
+      </div>
+      <div class="col-md-6">
+        {{ form.description|as_crispy_field }}
+      </div>
+    </div>
+    <div class="row">
+      <div class="col-md-6">
+        {{ form.video|as_crispy_field }}
+      </div>
+      <div class="col-md-6">
+        {{ form.artist|as_crispy_field }}
+      </div>
+    </div>
+    <div class="row">
+      <div class="col-md-6">
+        {{ form.poster|as_crispy_field }}
+      </div>
+    </div>
+    <input type="submit" value="Submit" id="final" class="btn btn-primary">
+    <a class="btn btn-default" href="{% url 'admin_all_video_list' %}">Cancel</a>
+  </form>
+</div>
+
+{% endblock content %}

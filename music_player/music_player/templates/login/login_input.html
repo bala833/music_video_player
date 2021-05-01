@@ -1,0 +1,133 @@
+{% extends 'base.html' %}
+{% load static %}
+{% load crispy_forms_tags %}
+
+{% block content %}
+<style type="text/css">
+.errorlist {
+    display: none;
+}
+
+#id_user_name {
+    border-radius: 5px;
+}
+
+#id_password {
+    border-radius: 5px;
+}
+
+
+.input-icons i {
+    position: absolute;
+}
+
+.input-icons {
+    width: 100%;
+    margin-bottom: 10px;
+}
+
+.icon {
+    padding: 23px;
+    min-width: 40px;
+}
+
+.input-field {
+    width: 100%;
+    padding: 10px;
+    text-align: center;
+}
+
+.icon_rpls {
+
+    margin-left: -15px !important;
+    margin-top: 13px;
+}
+
+input[type=text],
+input[type=password] {
+    width: 105% !important;
+    height: 43px;
+    padding-left: 28px;
+}
+
+.pass_icon {
+    float: right;
+    margin-top: 23px;
+}
+
+#icon_add {
+	margin-top: 14px;
+    margin-left: -8px;
+}
+
+.lable-name{
+  color: black;
+}
+</style>
+
+
+
+<div class="row " style="margin-top: 70px;">
+    <div class="col-md-4">
+    </div>
+    <div class="col-md-4 mt-5 d-flex justify-content-center">
+        <span style="color: black;">
+            <h2>Admin Login</h2>
+        </span>
+    </div>
+    <div class="col-md-4">
+    </div>
+</div>
+<div class="row " style="margin-bottom: 50px; ">
+    <div class="col-md-4">
+    </div>
+    <div class="col-md-4">
+        <div class="m-3">
+            {% if form.errors %}
+            <p style="color: red;white-space: nowrap;}">Your username and password didn't match. Please try again.</p>
+            {% endif %}
+            <form method="post">
+                {% csrf_token %}
+                <div class="input-icons">
+                    <i class="fa fa-user icon icon_rpls"></i>
+                    <span class="lable-name"> User Name</span>
+                    {{form.user_name}}
+                    <i class="fa fa-key icon icon_rpls">
+                    </i>
+                    <a toggle="#id_password" class="field-icon toggle-password pass_icon"><i id="icon_add" class="fa fa-fw fa-eye  "></i></a>
+                    <span class="lable-name">Password</span>
+                    {{form.password}}
+                </div>
+                <div class="row mt-4 d-flex justify-content-center">
+                    <input class="btn btn-success mr-3" type="submit" value="submit" />
+                    <input class="btn ml-3" type="button" value="Cancel" onclick="window.history.go(-1);" />
+                </div>
+            </form>
+        </div>
+    </div>
+    <div class="col-md-4">
+    </div>
+</div>
+
+{% endblock content %}
+
+{% block javascripts %}
+<script type="text/javascript">
+$(".toggle-password").click(function() {
+
+    $('#icon_add').toggleClass("fas fa-eye-slash");
+    var input = $($(this).attr("toggle"));
+    if (input.attr("type") == "password") {
+        input.attr("type", "text");
+    } else {
+        input.attr("type", "password");
+    }
+});
+
+
+$( window ).on( "load", function() {
+	$('#id_user_name').val('');
+	$('#id_password').val('');
+});
+</script>
+{% endblock javascripts %}

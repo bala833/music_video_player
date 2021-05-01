@@ -1,0 +1,480 @@
+{% extends 'base.html' %}
+{% load static %}
+{% block stylesheets %}
+<style type="text/css">
+
+.thumbnail {
+    padding: 0.25rem;
+    background-color: #fafafa;
+    border: 1px solid #dee2e6;
+    border-radius: 0.25rem;
+    box-shadow: 0 1px 2px rgb(0 0 0 / 8%);
+    max-width: 60%;
+    height: auto;
+}
+
+.listsong:hover{
+  background-color: #e2e2e2;
+  border-bottom-left-radius: 14pc;
+  border-top-right-radius: 14pc;
+}
+
+.rotate {
+  animation: rotation 8s infinite linear;
+}
+
+@keyframes rotation {
+  from {
+    transform: rotate(0deg);
+  }
+  to {
+    transform: rotate(359deg);
+  }
+}  
+
+.list_data{
+  background-color: #d3d6d0; border-bottom-left-radius: 14pc;border-top-right-radius: 14pc;
+}
+
+.admin_btn{
+  margin-left: 5px;
+  margin-top: : 5px;
+}
+.active{
+  background-color: #d5b0bb;
+}
+
+
+.slick-prev, .slick-next{
+  display: none !important;
+}
+
+
+.img-resize{
+  max-width: 93%;
+  height: auto;
+  border-radius: 7px;
+}
+
+.zoom {
+  transition: transform .2s; /* Animation */
+  display: block;
+  cursor: pointer;
+}
+
+.zoom:hover {
+  transform: scale(1.2); /* (150% zoom - Note: if the zoom is too large, it will go outside of the viewport) */
+}
+
+.inital_zoom_txt{
+  visibility: hidden;
+}
+.zoom_hover_txtoo:hover{
+   color: white;
+  margin-top: -45px !important;
+  position: absolute;
+  visibility: visible;
+ 
+}
+
+hr {
+    margin-bottom: -2rem !important;
+}
+
+.popular{
+margin-bottom: -0.5rem !important;
+margin-left: 1.25rem !important;
+font-weight: bold;
+}
+
+
+
+
+.single_arrow{
+  transition: transform .2s; /* Animation */
+}
+
+
+.single_arrow:hover {
+  transform: scale(1.2); /* (150% zoom - Note: if the zoom is too large, it will go outside of the viewport) */
+}
+
+
+
+
+</style>
+<link rel="stylesheet" type="text/css" href="//cdn.jsdelivr.net/npm/slick-carousel@1.8.1/slick/slick.css"/>
+<link rel="stylesheet" href="//code.jquery.com/ui/1.12.1/themes/base/jquery-ui.css">
+{% endblock stylesheets %}
+{% block content %}
+
+{% if messages %}
+<ul class="messages">
+    {% for message in messages %}
+    <li  {% if message.tags %} class=" {{ message.tags }} " {% endif %}> {{ message }} </li>
+    {% endfor %}
+</ul>
+{% endif %}
+
+
+
+<div class="row ml-2 mt-2">
+  <div class='col-md-5'>
+    <a href="{% url 'landing_page' %}" class="button_audio" style="vertical-align:middle"><span>Audio </span></a>
+    <a href="{% url 'play_video' %}" class="button_video" style="vertical-align:middle"><span> Video</span></a>
+  </div>
+  <!-- ------------------------------------------------------ -->
+  <div class='col-md-7'>
+    <form class="navbar-form" role="search" action="{% url 'search_song_submit' %}" method="post" id="songform">
+      {% csrf_token %}
+      <div class="input-group">
+        <input id="hideid" name="song_id" type="hidden" />
+        <input type="text" class="form-control" placeholder="Search Song" name="q" id="song" style="margin-top: 11px;">
+        <div class="input-group-btn">
+          <button class="btn btn-search" type="submit" id="submit_song"><span>Search</span></i></button>
+        </div>
+      </div>
+    </form>
+  </div>
+</div>
+
+<div id="audio-player" >
+{% if data == 'listpage' %}
+<div class="row mt-5">
+  <div class="col-md-1">
+  </div>
+  <div class="col-md-10">
+    <table class="col-md-12">
+      <tbody>
+        {% for mus in music %}
+        <tr class="row mb-3 listsong list_data" style="">
+          <td class="col-md-10" style="margin-top: 24px;">
+            <a href="{% url 'play_music' pk=mus.id %}">
+              <span style="margin-left: 182px; color: black; font-family: cursive;">{{mus.title}}</span></br>
+              <span style="margin-left: 182px; color: black; font-style: italic; font-weight: 400; font-family: -webkit-pictograph;">{{mus.artist}}</span>
+            </a>
+          </td>
+          <td class="col-md-2">
+            <a href="{% url 'play_music' pk=mus.id %}">
+              <img src="{{mus.poster.url}}" alt="{{mus.name}}" style="max-width: 60%; border-radius: 12px; height: auto; padding: 0.25rem;">
+            </a>
+          </td>
+        </tr>
+        {% endfor %}
+      </tbody>
+    </table>
+  </div>
+  <div class="col-md-1">
+  </div>
+</div>
+
+
+{% endif %}
+<!-- --------------------------------------------------------------------------------------------------- -->
+{% if data == 'playsong' %}
+
+<div class="row">
+  <div class="">
+    <a href="{% url 'landing_page' %}"><i style="color: black;font-size: 45px;margin-left: 28px;margin-top: 8px;
+      }" class="fa single_arrow">&#xf104;</i></a>
+  </div>
+</div>
+<div class="row ">
+  <div class="col-md-5 m-5">
+    <div class="row d-flex justify-content-center">
+      <div class="">
+        <span class="" style="color: black; font-size: 26px; font-family: ui-monospace;">{{music.title}}</span>
+      </div></br>
+    </div>
+    <div class="row d-flex justify-content-center" style="margin-left: 102px;">
+      <div class="">
+        <img class="rotate rounded-circle" src="{{music.poster.url}}" alt="{{music.name}}" style="max-width: 60%; border-radius: 12px; height: auto; padding: 0.25rem;">
+      </div></br>
+    </div>
+    <div class="row d-flex justify-content-center">
+      <div class="">
+        <span style='color: black;'>{{music.artist}}</span>
+      </div>
+    </div>
+    <div class="row d-flex justify-content-center">
+      <div class="">
+        <audio controls preload="none">
+          <source src="{{ music.music.url }}" type="audio/mp3" />
+          Your browser does not support the audio element.
+        </audio>
+      </div>
+    </div>
+  </div>
+  <div class="col-md-6 mt-5">
+    <table class="">
+      <tbody>
+        {% for mus in music_list %}
+        {% if mus.id == music.id %}
+        <tr class="row mb-3 listsong list_data active" style="">
+          <td class="col-md-10" style="margin-top: 10px;">
+            <a href="{% url 'play_music' pk=mus.id %}">
+              <img src="{% static 'img/music_.gif' %}" style="    max-width: 97px;height: auto; margin-left: 17px; position: absolute; margin-top: -63px;">
+              <span style="margin-left: 182px; color: black; font-family: cursive;">{{mus.title}}</span></br>
+              <span style="margin-left: 182px; color: black; font-style: italic; font-weight: 400; font-family: -webkit-pictograph;">{{mus.artist}}</span>
+            </a>
+          </td>
+          <td class="col-md-2 mt-2">
+            <a href="{% url 'play_music' pk=mus.id %}">
+              <img src="{{mus.poster.url}}" alt="{{mus.name}}" style="max-width: 60%; border-radius: 12px; height: auto; padding: 0.25rem;">
+            </a>
+          </td>
+        </tr>
+        {% endif %}
+        {% endfor %}
+        {% for mus in music_list %}
+        {% if mus.id != music.id %}
+        <tr class="row mb-3 listsong list_data" style="">
+          <td class="col-md-10" style="margin-top: 10px;">
+            <a href="{% url 'play_music' pk=mus.id %}">
+              <span style="margin-left: 182px; color: black; font-family: cursive;">{{mus.title}}</span></br>
+              <span style="margin-left: 182px; color: black; font-style: italic; font-weight: 400; font-family: -webkit-pictograph;">{{mus.artist}}</span>
+            </a>
+          </td>
+          <td class="col-md-2 mt-2">
+            <a href="{% url 'play_music' pk=mus.id %}">
+              <img src="{{mus.poster.url}}" alt="{{mus.name}}" style="max-width: 60%; border-radius: 12px; height: auto; padding: 0.25rem;">
+            </a>
+          </td>
+        </tr>
+        {% endif %}
+        {% endfor %}
+      </tbody>
+    </table>
+  </div>
+</div>
+{% endif %}
+
+</div>
+
+<div id="video-player" hidden>
+
+
+
+
+  <div class="row">
+    <p class="popular"> Popular Shows</p>
+  </div>
+  <hr>
+
+  <div class="slider" style="margin-bottom: -43px;">
+    {% for videos in video %}
+    <div class="my-5">
+      <div class="zoom">
+        <a href="{% url 'video_player' pk=videos.id %}">
+        <img class="img-resize" src="{{videos.poster.url}}" />
+        <p class="" style="text-align: center;font-weight: bolder;color: black;">{{videos.title|truncatechars:10}}, {{videos.artist|truncatechars:10}}</p>
+      </a>
+      </div>
+    </div>
+
+  {% endfor %}
+</div>
+
+
+
+
+
+<div class="row">
+  <span class="popular"> Similar and Related Shows</span>
+</div>
+  <div class="slider" style="margin-bottom: -43px;">
+    {% for videos in video %}
+    <div class="my-5">
+      <div class="zoom">
+        <img class="img-resize" src="{{videos.poster.url}}" />
+        <p class="" style="text-align: center;font-weight: bolder;color: black;">{{videos.title|truncatechars:10}}, {{videos.artist|truncatechars:10}}</p>
+      </div>
+    </div>
+
+  {% endfor %}
+</div>
+
+
+
+
+
+<div class="row"></div>
+  <span class="popular" style="margin-bottom: -43px;"> Most Watches Shows</span>
+  <div class="slider">
+    {% for videos in video %}
+    <div class="my-5">
+      <div class="zoom">
+        <img class="img-resize" src="{{videos.poster.url}}" />
+        <p class="" style="text-align: center;font-weight: bolder;color: black;">{{videos.title|truncatechars:10}}, {{videos.artist|truncatechars:10}}</p>
+      </div>
+    </div>
+
+  {% endfor %}
+</div>
+
+
+
+{% comment %}
+<div class="row"></div>
+  <div class="slider">
+    {% for related_similar in relatedsimilar %}
+    {% for item in related_similar.item_set.all %}
+    {{item}}-dddddddddddddddd
+    {% endfor%}
+    <div class="my-5">
+      <div class="zoom">
+        <img class="img-resize" src="{{related_similar.poster.url}}" />
+        <p class="" style="text-align: center;font-weight: bolder;color: black;">{{related_similar.title|truncatechars:10}}, {{related_similar.artist|truncatechars:10}}</p>
+      </div>
+    </div>
+
+  {% endfor %}
+</div>
+
+
+
+
+
+
+  <div class="slider">
+    {% for most_watches in mostwatch %}
+    <div class="my-5">
+      <div class="zoom">
+        <img class="img-resize" src="{{most_watches.Video.poster.url}}" />
+        <p class="" style="text-align: center;font-weight: bolder;color: black;">{{most_watches.title|truncatechars:10}}, {{most_watches.artist|truncatechars:10}}</p>
+      </div>
+    </div>
+
+  {% endfor %}
+</div>
+</div>
+
+{% endcomment %}
+
+
+
+{% endblock content %}
+
+
+{% block javascripts %}
+
+
+<!-- JS -->
+
+<script type="text/javascript" src="//cdn.jsdelivr.net/npm/slick-carousel@1.8.1/slick/slick.min.js"></script>
+<script src="https://code.jquery.com/ui/1.12.1/jquery-ui.js"></script>
+<script type="text/javascript">
+  
+$('#audio-player-play').click(function(){
+  $('#video-player').attr('hidden','hidden')
+  $('#audio-player').removeAttr('hidden','hidden')
+});
+
+$('#video-player-play').click(function(){
+
+  $('#video-player').removeAttr('hidden','hidden')
+
+  $('#audio-player').attr('hidden','hidden')
+});
+
+
+
+
+
+
+
+
+
+$(document).ready(function() {
+
+// slick js
+$('.slider').slick({
+  infinite: false,
+  speed: 300,
+  slidesToShow: 8,
+  slidesToScroll: 4,
+  responsive: [
+    {
+      breakpoint: 1024,
+      settings: {
+        slidesToShow: 3,
+        slidesToScroll: 3,
+        infinite: true,
+        // autoplay : true
+      }
+    },
+    {
+      breakpoint: 600,
+      settings: {
+        slidesToShow: 2,
+        slidesToScroll: 2
+      }
+    },
+    {
+      breakpoint: 480,
+      settings: {
+        slidesToShow: 1,
+        slidesToScroll: 1
+      }
+    }
+    // You can unslick at a given breakpoint now by adding:
+    // settings: "unslick"
+    // instead of a settings object
+  ]
+});
+
+
+
+ $('.next-slide').on('click', function() {
+          $('.hero-slider').slickNext();
+          
+      });
+      $('.prev-slide').on('click', function() {
+          $('.hero-slider').slickPrev();
+        
+      });
+      });
+
+
+
+
+
+
+
+
+
+
+
+$(function() {
+
+    $('#songform').on('keyup', "#song", function() {
+        var value = $(this).val();
+
+        $.ajax({
+            url: "{% url 'song_autocomplete' %}",
+            data: {
+                'search': value,
+            },
+            dataType: 'json',
+            success: function(data) {
+                result_list = data.result_list;
+                console.log(result_list)
+                $("#song").autocomplete({
+                    source: result_list,
+                    minLength: 2,
+                    select: function(event, ui) {
+                        $("#song").val(ui.item.label); // display the selected text input field
+                        $("#hideid").val(ui.item.id); // save selected id to hidden input
+                    },
+
+                });
+                
+            }
+        });
+    });
+});
+
+</script>
+
+
+{% endblock javascripts %}

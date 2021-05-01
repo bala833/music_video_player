@@ -1,0 +1,286 @@
+{% extends 'base.html' %}
+{% load static %}
+
+
+{% block stylesheets %}
+<style type="text/css">
+.img-resize{
+  max-width: 93%;
+  height: auto;
+  border-radius: 7px;
+}
+
+.zoom {
+  transition: transform .2s; /* Animation */
+  display: block;
+  cursor: pointer;
+}
+
+.zoom:hover {
+  transform: scale(1.2); /* (150% zoom - Note: if the zoom is too large, it will go outside of the viewport) */
+}
+
+.inital_zoom_txt{
+  visibility: hidden;
+}
+
+.slick-prev, .slick-next{
+  display: none !important;
+}
+
+
+.popular{
+margin-bottom: -0.5rem !important;
+margin-left: 1.25rem !important;
+font-weight: bold;
+}
+</style>
+<link rel="stylesheet" type="text/css" href="//cdn.jsdelivr.net/npm/slick-carousel@1.8.1/slick/slick.css"/>
+<link rel="stylesheet" href="//code.jquery.com/ui/1.12.1/themes/base/jquery-ui.css">
+
+{% endblock stylesheets %}
+
+{% block content %}
+<div class="row ml-2 mt-2">
+  <div class='col-md-5'>
+    <a href="{% url 'landing_page' %}" class="button_audio" style="vertical-align:middle"><span>Audio </span></a>
+    <a href="{% url 'play_video' %}" class="button_video" style="vertical-align:middle"><span> Video</span></a>
+  </div>
+  <!-- ------------------------------------------------------ -->
+  <div class='col-md-7'>
+    <form class="navbar-form" role="search" action="{% url 'search_video_submit' %}" method="post" id="videoform">
+      {% csrf_token %}
+      <div class="input-group">
+        <input id="hideid" name="video_id" type="hidden" />
+        <input type="text" class="form-control" placeholder="Search Video" name="q" id="video" style="margin-top: 11px;">
+        <div class="input-group-btn">
+          <button class="btn btn-search" type="submit" id="submit_song"><span>Search</span></i></button>
+        </div>
+      </div>
+    </form>
+  </div>
+</div>
+
+
+  <div class="row">
+    <p class="popular"> Popular Shows</p>
+  </div>
+  <hr>
+
+  <div class="slider" style="margin-bottom: -43px;">
+    {% for videos in video %}
+    <div class="my-5">
+      <div class="zoom">
+        <a href="{% url 'video_player' pk=videos.id %}">
+        <img class="img-resize" src="{{videos.poster.url}}" />
+        <p class="" style="text-align: center;font-weight: bolder;color: black;">{{videos.title|truncatechars:10}}, {{videos.artist|truncatechars:10}}</p>
+      </a>
+      </div>
+    </div>
+
+  {% endfor %}
+</div>
+
+
+
+
+
+<div class="row">
+  <span class="popular"> Similar and Related Shows</span>
+</div>
+  <div class="slider" style="margin-bottom: -43px;">
+    {% for videos in video %}
+    <div class="my-5">
+      <div class="zoom">
+        <img class="img-resize" src="{{videos.poster.url}}" />
+        <p class="" style="text-align: center;font-weight: bolder;color: black;">{{videos.title|truncatechars:10}}, {{videos.artist|truncatechars:10}}</p>
+      </div>
+    </div>
+
+  {% endfor %}
+</div>
+
+
+
+
+
+<div class="row"></div>
+  <span class="popular" style="margin-bottom: -43px;"> Most Watches Shows</span>
+  <div class="slider">
+    {% for videos in video %}
+    <div class="my-5">
+      <div class="zoom">
+        <img class="img-resize" src="{{videos.poster.url}}" />
+        <p class="" style="text-align: center;font-weight: bolder;color: black;">{{videos.title|truncatechars:10}}, {{videos.artist|truncatechars:10}}</p>
+      </div>
+    </div>
+
+  {% endfor %}
+</div>
+
+
+
+{% comment %}
+<div class="row"></div>
+  <div class="slider">
+    {% for related_similar in relatedsimilar %}
+    {% for item in related_similar.item_set.all %}
+    {{item}}-dddddddddddddddd
+    {% endfor%}
+    <div class="my-5">
+      <div class="zoom">
+        <img class="img-resize" src="{{related_similar.poster.url}}" />
+        <p class="" style="text-align: center;font-weight: bolder;color: black;">{{related_similar.title|truncatechars:10}}, {{related_similar.artist|truncatechars:10}}</p>
+      </div>
+    </div>
+
+  {% endfor %}
+</div>
+
+
+
+
+
+
+  <div class="slider">
+    {% for most_watches in mostwatch %}
+    <div class="my-5">
+      <div class="zoom">
+        <img class="img-resize" src="{{most_watches.Video.poster.url}}" />
+        <p class="" style="text-align: center;font-weight: bolder;color: black;">{{most_watches.title|truncatechars:10}}, {{most_watches.artist|truncatechars:10}}</p>
+      </div>
+    </div>
+
+  {% endfor %}
+</div>
+</div>
+
+{% endcomment %}
+
+
+
+{% endblock content %}
+
+
+{% block javascripts %}
+
+
+<!-- JS -->
+
+<script type="text/javascript" src="//cdn.jsdelivr.net/npm/slick-carousel@1.8.1/slick/slick.min.js"></script>
+<script src="https://code.jquery.com/ui/1.12.1/jquery-ui.js"></script>
+
+<script type="text/javascript">
+  
+$('#audio-player-play').click(function(){
+  $('#video-player').attr('hidden','hidden')
+  $('#audio-player').removeAttr('hidden','hidden')
+});
+
+$('#video-player-play').click(function(){
+
+  $('#video-player').removeAttr('hidden','hidden')
+
+  $('#audio-player').attr('hidden','hidden')
+});
+
+
+
+
+
+
+
+
+
+$(document).ready(function() {
+
+// slick js
+$('.slider').slick({
+  infinite: false,
+  speed: 300,
+  slidesToShow: 8,
+  slidesToScroll: 4,
+  responsive: [
+    {
+      breakpoint: 1024,
+      settings: {
+        slidesToShow: 3,
+        slidesToScroll: 3,
+        infinite: true,
+        // autoplay : true
+      }
+    },
+    {
+      breakpoint: 600,
+      settings: {
+        slidesToShow: 2,
+        slidesToScroll: 2
+      }
+    },
+    {
+      breakpoint: 480,
+      settings: {
+        slidesToShow: 1,
+        slidesToScroll: 1
+      }
+    }
+    // You can unslick at a given breakpoint now by adding:
+    // settings: "unslick"
+    // instead of a settings object
+  ]
+});
+
+
+
+ $('.next-slide').on('click', function() {
+          $('.hero-slider').slickNext();
+          
+      });
+      $('.prev-slide').on('click', function() {
+          $('.hero-slider').slickPrev();
+        
+      });
+      });
+
+
+
+
+
+
+
+
+
+$(function() {
+
+    $('#videoform').on('keyup', "#video", function() {
+        var value = $(this).val();
+
+        $.ajax({
+            url: "{% url 'video_autocomplete' %}",
+            data: {
+                'search': value,
+            },
+            dataType: 'json',
+            success: function(data) {
+                result_list = data.result_list;
+                console.log(result_list)
+                $("#video").autocomplete({
+                    source: result_list,
+                    minLength: 2,
+                    select: function(event, ui) {
+                        $("#video").val(ui.item.label); // display the selected text input field
+                        $("#hideid").val(ui.item.id); // save selected id to hidden input
+                    },
+
+                });
+                
+            }
+        });
+    });
+});
+
+
+</script>
+
+
+{% endblock javascripts %}

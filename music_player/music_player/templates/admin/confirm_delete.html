@@ -1,0 +1,39 @@
+{% extends 'base.html' %}
+
+{% block content %}
+
+<div class="container">
+  <div class="m-5">
+    <div class="row">
+      <img src="{{data.poster.url}}" alt="{{data.name}}" style="max-width: 13%; border-radius: 12px; height: auto; padding: 0.25rem;">
+    </div>
+    <div class="row">
+      <div class="">
+        <span style="color: black; ">
+          are you sure want to delete <span style="color: red; font-style: italic;">{{data.title}}</span> song.
+        </span>
+      </div>
+    </div>
+    <div class="row">
+      {% if type_d == 'video' %}
+      <a href="{% url 'delete_video' pk=data.id %}" class="btn btn-danger ml-2">Delete</a>
+      <a class="btn btn-default" href="{% url 'admin_all_video_list' %}">Cancel</a>
+      {% else %}
+      <a href="{% url 'delete_song' pk=data.id %}" class="btn btn-danger ml-2">Delete</a>
+      <a class="btn btn-default" href="{% url 'admin_all_list' %}">Cancel</a>
+      {% endif %}
+    </div>
+  </div>
+</div>
+
+
+
+
+
+
+{% endblock content %}
+
+{{data.id}}
+{{data.artist}}
+{{data.title}}
+{{data.poster.url}}

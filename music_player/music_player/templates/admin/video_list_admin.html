@@ -1,0 +1,90 @@
+{% extends 'base.html' %}
+{% block stylesheets %}
+ 
+
+
+
+
+{% endblock stylesheets %}
+
+
+
+
+
+{% block content %}
+
+{% if request.user.is_superuser %}
+
+
+
+
+
+
+
+<div class="row mt-3">
+  <div class="d-flex justify-content-end">
+    <a href="{% url 'admin_all_list' %}" class="btn btn-rose admin_btn px-5 ml-2">Go Song List</a>
+  </div>
+  <div class="d-flex justify-content-end">
+    <a href="{% url 'add_video' %}" class="btn btn-video admin_btn px-5 ml-2">Add Video</a>
+  </div>
+</div>
+<div class="container">
+  <div class="row mt-3">
+    <table class="table table-responsive col-md-12 datatables">
+      <thead>
+        <tr>
+          <th>Video-Artist</th>
+          <th>Poster</th>
+          <th>Action</th>
+        </tr>
+      </thead>
+      <tbody>
+        {% for videos in video %}
+        <tr>
+          <td>
+            <span style="margin-left: 182px; color: black; font-family: cursive;">{{videos.title}}</span></br>
+            <span style="margin-left: 182px; color: black; font-style: italic; font-weight: 400; font-family: -webkit-pictograph;">{{videos.artist}}</span>
+          </td>
+          <td>
+            <img src="{{videos.poster.url}}" alt="{{videos.name}}" style="max-width: 15%; border-radius: 12px; height: auto; padding: 0.25rem;">
+          </td>
+          <td>
+            <div class="row">
+              <a href="{% url 'video_player' pk=videos.id %}" class="btn btn-outline-info">Play</a>
+              <a href="{% url 'edit_video' pk=videos.id %}" class="btn btn-outline-success  ml-2">Edit</a>
+              {% comment %}
+              <a href="{% url 'delete_song' pk=videos.id %}" class="btn btn-outline-danger ml-2">Delete</a>
+              {% endcomment %}
+              <a href="{% url 'initial_delete_video' pk=videos.id %}" class="btn btn-outline-danger ml-2">Delete</a>
+            </div>
+          </td>
+        </tr>
+        {% endfor %}
+      </tbody>
+    </table>
+  </div>
+</div>
+
+
+
+{% endif %}
+
+
+{% endblock content %}
+
+
+{% block javascripts %}
+<script src="https://cdn.datatables.net/1.10.24/js/jquery.dataTables.min.js"></script> 
+<script src="https://cdn.datatables.net/1.10.24/js/dataTables.bootstrap4.min.js"></script>
+<script type="text/javascript">
+  
+$(document).ready(function() {
+    $('.datatables').DataTable();
+} );
+
+
+</script>
+
+
+{% endblock javascripts %}

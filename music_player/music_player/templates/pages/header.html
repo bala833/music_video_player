@@ -1,0 +1,40 @@
+{% extends 'base.html' %}
+{% block stylesheets %}
+<style type="text/css">
+ .bottom {
+    box-shadow: 0px 15px 10px -15px #917777b8;    
+  }	
+
+</style>
+
+{% endblock stylesheets %}
+{% block header %}
+<div class="row bottom" style="background-color: #bfb4b4b8; height: 100px;">
+<div class="col-md-10 ">
+	
+	<div class="d-flex justify-content-center">
+		<span class="mt-2"><h3 style="font-weight: bolder;">Django- Music and Video Player</h3></span> 
+	</div>
+	</div>
+<div class="col-md-2">
+{% if not request.user.is_superuser %}
+<div class="row d-flex justify-content-center mt-3">
+  <div class="">
+    <a href="{% url 'login_page' %}" class="btn btn-primary admin_btn">Admin Login</a>
+  </div>
+</div>
+{% else %}
+<div class="row  d-flex justify-content-center mt-1">
+  <div class="">
+    <a href="{% url 'logout_view' %}" class="btn btn-danger admin_btn ml-3">Admin logout</a>
+  </div>
+  <div class="">
+    <a href="{% url 'admin_all_list' %}" class="btn btn-success admin_btn ml-3">GoTo Admin</a>
+  </div>
+</div>
+{% endif %}
+	</div>
+	</div>
+		
+
+{% endblock header %}
